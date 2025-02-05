@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Sintaxis_1
-{
+namespace Semantica {
     public class Variable {
         public enum TipoDato {
             Char,
@@ -22,9 +21,36 @@ namespace Sintaxis_1
             this.valor = valor;
         }
 
-        public void setValor (float Valor) {
-            valor = Valor;
+        public void setValor(float valor)
+        {
+            if (tipo == TipoDato.Char && valor <= 255)
+            {
+                this.valor = valor;
+            }
+            else if (tipo == TipoDato.Int && valor <= 65535)
+            {
+                this.valor = valor;
+            }
+            else if (tipo == TipoDato.Float)
+            {
+                this.valor = valor;
+            }
+            else
+            {
+                throw new Error("Semántico: no se puede asignar un " + valorToTipoDato(valor) + " a un " + tipo);
+            }
         }
+
+
+         private TipoDato valorToTipoDato(float valor) {
+            if(valor <= 255) {
+                return TipoDato.Char;
+            } else if(valor <= 65535) {
+                return TipoDato.Int;
+            } else {
+                return TipoDato.Float;
+            }
+         }
 
         public float getValor() {
             return valor;

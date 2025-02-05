@@ -4,15 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Sintaxis_1 {
+namespace Semantica {
     public class Error : Exception
     {
-        public Error(string message, int line) : base( message +" en linea " + line) { }
-        public Error(string message, StreamWriter log) : base("Error de" + message) {
-            log.WriteLine("Error de" + message);
+        public Error(string message) : base( message) { }
+        public Error(string message, StreamWriter log) : base("Error " + message) {
+            log.WriteLine("Error " + message);
         }
-        public Error(string message, StreamWriter log, int line) : base("Error de " + message + ", linea " + line) {
-            log.WriteLine("Error de " + message + " linea " + line);
+        public Error(string message, int linea, int col) : base( message +", en linea " + linea + "columna " + col) { }
+        public Error(string message, StreamWriter log, int linea) : base("Error " + message + ", linea " + linea) {
+            log.WriteLine("Error " + message + " linea " + linea);
         }
     }
 }

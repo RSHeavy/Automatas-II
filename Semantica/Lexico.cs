@@ -6,11 +6,12 @@ using System.IO;
 using System.Linq.Expressions;
 using Microsoft.VisualBasic;
 
-namespace Sintaxis_1 {
+namespace Semantica {
     public class Lexico : Token,  IDisposable {
         const int F = -1;
         const int E = -2;
-        protected int line = 1;
+        protected int linea = 1;
+        protected int col = 0;
         protected StreamReader archivo;
         protected StreamWriter log;
         protected StreamWriter asm;
@@ -56,20 +57,28 @@ namespace Sintaxis_1 {
             { 36, 36, 36, 36, 36, 36, 35, 36, 36, 36, 36, 36, 37, 36, 36, 36, 36, 36, 36, 36, 36, 36,  0, 36, 36, 36  }
         };
         //Constructor de la clase lexico
-        public Lexico() {
-            log = new StreamWriter("prueba.log");
-            asm = new StreamWriter("prueba.asm");
+        public Lexico(string nombreArchivo = "prueba.cpp", string archivoLog = "prueba.log", string ArchivoASM = "prueba.asm"){
 
+            log = new StreamWriter(archivoLog);
             log.AutoFlush = true;
-            asm.AutoFlush = true;
 
-            if (File.Exists("prueba.cpp")) {
-                archivo = new StreamReader("prueba.cpp");
+            if (File.Exists(nombreArchivo)) {
+                archivo = new StreamReader(nombreArchivo);
             } else {
-                throw new Error("El archivo prueba.cpp no existe",  log);
+                throw new Error("El archivo " + nombreArchivo + " no existe", log);
             }
+
+            if (Path.GetExtension(nombreArchivo) == ".cpp") {
+                asm = new StreamWriter(ArchivoASM);
+                asm.AutoFlush = true;
+            } else {
+                throw new Error("Extensión invalida del archivo " + nombreArchivo, log);
+            }
+
+            log.WriteLine("Programa: {0}", nombreArchivo);
+            fechaHora();
         }
-        //Constructor sobrecargado
+        /*//Constructor sobrecargado
         public Lexico(string nombreArchivo) { 
             log = new StreamWriter(Path.ChangeExtension(nombreArchivo,  ".log"));
             log.AutoFlush = true;
@@ -89,9 +98,10 @@ namespace Sintaxis_1 {
             log.WriteLine("Programa: {0}", nombreArchivo);
             fechaHora();
         }
+        */
         //Destructor de la clase lexico
         public void Dispose() {
-            log.WriteLine("Total de lineas {0}",  line);
+            log.WriteLine("Total de lineas {0}",  linea);
 
             log.Close();
             archivo.Close();
@@ -155,62 +165,62 @@ namespace Sintaxis_1 {
         private void clasificacion(int estado) {
             switch (estado) {
                 case 1: 
-                    setClasificacion(Tipos.Identificador); 
+                    Clasificacion = Tipos.Identificador; 
                     break;
                 case 2: 
-                    setClasificacion(Tipos.Numero); 
+                    Clasificacion =Tipos.Numero; 
                     break;
                 case 8: 
-                    setClasificacion(Tipos.FinSentencia); 
+                    Clasificacion =Tipos.FinSentencia; 
                     break;
                 case 9: 
-                    setClasificacion(Tipos.InicioBloque); 
+                    Clasificacion =Tipos.InicioBloque; 
                     break;
                 case 10:
-                    setClasificacion(Tipos.FinBloque); 
+                    Clasificacion =Tipos.FinBloque; 
                     break;
                 case 11:
-                    setClasificacion(Tipos.OperadorTernario); 
+                    Clasificacion =Tipos.OperadorTernario; 
                     break;
                 case 12:
                 case 14:
-                    setClasificacion(Tipos.OperadorTermino); 
+                    Clasificacion =Tipos.OperadorTermino; 
                     break;
                 case 13:
-                    setClasificacion(Tipos.IncrementoTermino); 
+                    Clasificacion =Tipos.IncrementoTermino; 
                     break;
                 case 15:
-                    setClasificacion(Tipos.Puntero); 
+                    Clasificacion =Tipos.Puntero; 
                     break;
                 case 16:
                 case 34: 
-                    setClasificacion(Tipos.OperadorFactor); 
+                    Clasificacion =Tipos.OperadorFactor; 
                     break;
                 case 17: 
-                    setClasificacion(Tipos.IncrementoFactor); 
+                    Clasificacion =Tipos.IncrementoFactor; 
                     break;
                 case 18:
                 case 20:
                 case 29:
                 case 32:
                 case 33: 
-                    setClasificacion(Tipos.Caracter); 
+                    Clasificacion =Tipos.Caracter; 
                     break;
                 case 19:
                 case 21: 
-                    setClasificacion(Tipos.OperadorLogico); 
+                    Clasificacion =Tipos.OperadorLogico; 
                     break;
                 case 22:
                 case 24:
                 case 25:
                 case 26: 
-                    setClasificacion(Tipos.OperadorRelacional); 
+                    Clasificacion =Tipos.OperadorRelacional; 
                     break;
                 case 23: 
-                    setClasificacion(Tipos.Asignacion); 
+                    Clasificacion =Tipos.Asignacion; 
                     break;
                 case 27: 
-                    setClasificacion(Tipos.Cadena); 
+                    Clasificacion =Tipos.Cadena; 
                     break;
             }
         }
@@ -220,15 +230,17 @@ namespace Sintaxis_1 {
             int estado = 0;
 
             while (estado >= 0) {
-
+                
                 c = (char)archivo.Peek();
                 estado = TRAND[estado,  columna(c)];
                 clasificacion(estado);
 
                 if (estado >= 0) {
                     archivo.Read();
+                    col++;
                     if (c == '\n') {
-                        line++;
+                        linea++;
+                        col = 0;
                     }
                     if (estado > 0) {
                         Buffer += c;
@@ -240,38 +252,38 @@ namespace Sintaxis_1 {
             if (estado == E) {
                 String mensaje;
 
-                if (getClasificacion() == Tipos.Numero) {
+                if (Clasificacion == Tipos.Numero) {
                     mensaje ="Lexico, Se espera un digito";
-                } else if (getClasificacion() == Tipos.Cadena) {
+                } else if (Clasificacion == Tipos.Cadena) {
                     mensaje = "Lexico, Se esperaban comillas";
-                } else if (getClasificacion() == Tipos.Caracter) {
+                } else if (Clasificacion == Tipos.Caracter) {
                     mensaje = "Lexico, Se esperaba una comilla";
                 } else {
                     mensaje = "Lexico, Se esperaba cierre de comentario";
                 }
-                throw new Error(mensaje, log, line);
+                throw new Error(mensaje, log, linea);
             }
             
-            setContenido(Buffer);
+            Contenido = Buffer;
 
-            if (getClasificacion() == Tipos.Identificador) {
-                switch(getContenido()) {
+            if (Clasificacion == Tipos.Identificador) {
+                switch(Contenido) {
                     case "char":
                     case "int":
                     case "float":
-                        setClasificacion(Tipos.TipoDato);
+                        Clasificacion =(Tipos.TipoDato);
                         break;
                     case "if":
                     case "else":
                     case "do":
                     case "while":
                     case "for":
-                        setClasificacion(Tipos.PalabraReservada);
+                        Clasificacion =(Tipos.PalabraReservada);
                         break;
                 }
             }    
             if (!finArchivo()) {
-                //log.WriteLine("{0}  °°°°  {1}",  getContenido(),  getClasificacion());
+                //log.WriteLine("{0}  °°°°  {1}",  getContenido(),  Clasificacion);
             }
         }
         public bool finArchivo() {

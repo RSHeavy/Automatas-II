@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Sintaxis_1 {
+namespace Semantica {
     public class Sintaxis : Lexico {
         public Sintaxis() : base() {
             nexToken();
@@ -12,17 +12,17 @@ namespace Sintaxis_1 {
             nexToken();
         }
         public void match(string contenido) {
-            if (contenido == getContenido()) {
+            if (contenido == Contenido) {
                 nexToken();
             } else {
-                throw new Error("Sintaxis: se espera un " + contenido, line);
+                throw new Error("Sintaxis: se espera un " + contenido, linea, col);
             }
         }
         public void match(Tipos clasificacion) {
-            if (clasificacion == getClasificacion()) {
+            if (clasificacion == Clasificacion) {
                 nexToken();
             } else {
-                throw new Error("Sintaxis: se esperaba " + clasificacion, line);
+                throw new Error("Sintaxis: se esperaba " + clasificacion, linea, col);
             }
         }
     }

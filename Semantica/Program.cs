@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Sintaxis_1 {
-    class Program {
+namespace Semantica {
+    class Program : Token{
         static void Main(string[] args) {
             try {
-                using Lenguaje l = new("Prueba.cpp");
-                    /*while (!l.finArchivo()) {
-                        l.nexToken();
-                    }*/
-                    l.Programa();
+                using Lenguaje l = new();
+                l.Programa();
             } catch (Exception e) {
-                Console.WriteLine("Error: " + e.Message);
+                Console.WriteLine("Error " + e.Message);
             }
         }
     }

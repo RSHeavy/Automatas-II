@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace Sintaxis_1 {
+namespace Semantica {
     public class Token {
         public enum Tipos {
             Identificador, 
@@ -33,6 +34,16 @@ namespace Sintaxis_1 {
             clasificacion = Tipos.Identificador;
         }
 
+        public Tipos Clasificacion {
+            get => clasificacion;
+            set => clasificacion = value;
+        }
+
+        public String Contenido {
+            get => contenido;
+            set => contenido = value;
+        }
+    /*
         public void setContenido(String contenido) {
             this.contenido = contenido;
         }
@@ -48,5 +59,6 @@ namespace Sintaxis_1 {
         public Tipos getClasificacion() {
             return this.clasificacion;
         }
+        */
     }
 }

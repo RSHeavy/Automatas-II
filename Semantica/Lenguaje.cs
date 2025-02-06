@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 /*
     - REQUERIMIENTOS -
         ------------------------------------------------------------------------------
-         1)
+        [ 1) Implementar set y get para la clase Token                               ]
         ------------------------------------------------------------------------------
-         2) 
+        [ 2) Implementar parámetros por default en el constructor del archivo Léxico ]
         ------------------------------------------------------------------------------
-         3)                                                
+        [ 3) Implementar línea y columna en los errores Semanticos                    ]
         ------------------------------------------------------------------------------
-         4) 
+         4) Implementar maximoTipo en la asignación (cuando se haga v.setValor(r))  
         ------------------------------------------------------------------------------
-         5) 
+         5) Aplicar el casteo en el Stack
         ------------------------------------------------------------------------------
          6) 
         ------------------------------------------------------------------------------
@@ -27,13 +27,16 @@ namespace Semantica {
     public class Lenguaje : Sintaxis {
         Stack<float> s;
         List<Variable> l;
+        Variable.TipoDato maximoTipo;
         public Lenguaje() : base() {
             s = new Stack<float>();
             l = new List<Variable>();
+            maximoTipo = Variable.TipoDato.Char;
         }
         public Lenguaje(string name) : base(name) {
             s = new Stack<float>();
             l = new List<Variable>();
+            maximoTipo = Variable.TipoDato.Char;
         }
 
         private void DysplayStack() {
@@ -122,12 +125,12 @@ namespace Semantica {
                     if (Contenido == "Read") {
                         match("Read");
                         int r = Console.Read();
-                        v.setValor(r); // Asignamos el último valor leído a la última variable detectada
+                        v.setValor(r, linea, col); // Asignamos el último valor leído a la última variable detectada
                     } else {
                         match("ReadLine");
                         string? r = Console.ReadLine();
                         if (float.TryParse(r, out float valor)) {
-                            v.setValor(valor);
+                            v.setValor(valor, linea, col);
                         } else {
                             throw new Error("Sintaxis. No se ingresó un número ", linea, col);
                         }
@@ -138,7 +141,7 @@ namespace Semantica {
                     // Como no se ingresó un número desde el Console, entonces viene de una expresión matemática
                     Expresion();
                     float resultado = s.Pop();
-                    l.Last().setValor(resultado);
+                    l.Last().setValor(resultado, linea, col);
                 }
             }
             if (Contenido == ",") {
@@ -191,6 +194,8 @@ namespace Semantica {
         //Asignacion -> id = Expresion | id++ | id-- | id  IncTermino expresion |                                           
                       //id IncrementoFactor Expresion | id = console.Read() | id = console.ReadLine()
         private void Asignacion() {
+            //Cada vez que haya una asignacion para reiniciar el maximo tipo
+            maximoTipo = Variable.TipoDato.Char;
             float nuevoValor = 0;
             Variable? v = l.Find(Variable => Variable.getNombre() == Contenido);
 
@@ -206,7 +211,9 @@ namespace Semantica {
                 if (Contenido == "Console") {
                     ListaIdentificadores(v.getTipoDato());
                 } else {
+                    Console.WriteLine("Antes: " + maximoTipo);
                     Expresion();
+                    Console.WriteLine("Despues: " + maximoTipo);
                     nuevoValor = s.Pop();
                 }
             } else {
@@ -246,16 +253,20 @@ namespace Semantica {
                         break;
                 }
             }
-            v.setValor(nuevoValor);
+            v.setValor(nuevoValor, linea, col);
             //DysplayStack();
         }
 
         //Condicion -> Expresion operadorRelacional Expresion
         private bool Condicion() {
+            maximoTipo = Variable.TipoDato.Char;
             Expresion();
             float v1 = s.Pop();
+
             String operador = Contenido;
             match(Tipos.OperadorRelacional);
+
+            maximoTipo = Variable.TipoDato.Char;
             Expresion();
             float v2 = s.Pop();
 
@@ -459,13 +470,22 @@ namespace Semantica {
         //Factor -> numero | identificador | (Expresion)
         private void Factor() {
             if (Clasificacion == Tipos.Numero) {
+
+                if (maximoTipo < Variable.valorToTipoDato(float.Parse(Contenido))) {
+                    maximoTipo = Variable.valorToTipoDato(float.Parse(Contenido));
+                }
+
                 s.Push(float.Parse(Contenido));
                 //Console.Write(Contenido + " ");
                 match(Tipos.Numero);
             } else if (Clasificacion == Tipos.Identificador) {
                 Variable? v = l.Find(Variable => Variable.getNombre() == Contenido);
                 if (v == null) {
-                throw new Error("Sintaxis: La variable " + Contenido + " no existe", linea, col);
+                    throw new Error("Sintaxis: La variable " + Contenido + " no existe", linea, col);
+                }
+                
+                if (maximoTipo < v.getTipoDato()) {
+                    maximoTipo = v.getTipoDato();
                 }
 
                 s.Push(v.getValor());
@@ -473,7 +493,30 @@ namespace Semantica {
                 match(Tipos.Identificador);
             } else {
                 match("(");
+
+                Variable.TipoDato tipoCasteo = Variable.TipoDato.Char;
+                bool huboCasteo = false;
+
+                if (Clasificacion == Tipos.TipoDato) {
+
+                    switch(Contenido){
+                        case "int": tipoCasteo = Variable.TipoDato.Int; break;
+                        case "float": tipoCasteo = Variable.TipoDato.Float; break;
+                    }
+                    match(Tipos.TipoDato);
+                    match(")");
+                    match("(");
+                    huboCasteo = true;
+                }
                 Expresion();
+                if (huboCasteo) {
+                    maximoTipo = tipoCasteo;
+                    /*
+                        Pop
+                        Residui de la division del tipo
+                        Push
+                    */
+                }
                 match(")");
             }
         }

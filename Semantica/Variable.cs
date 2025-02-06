@@ -21,29 +21,18 @@ namespace Semantica {
             this.valor = valor;
         }
 
-        public void setValor(float valor)
-        {
-            if (tipo == TipoDato.Char && valor <= 255)
-            {
+        public void setValor(float valor, int linea, int col) {
+            if (valorToTipoDato(valor) <= tipo) {
                 this.valor = valor;
-            }
-            else if (tipo == TipoDato.Int && valor <= 65535)
-            {
-                this.valor = valor;
-            }
-            else if (tipo == TipoDato.Float)
-            {
-                this.valor = valor;
-            }
-            else
-            {
-                throw new Error("Semántico: no se puede asignar un " + valorToTipoDato(valor) + " a un " + tipo);
+            } else {
+                throw new Error("Semántico: no se puede asignar un " + valorToTipoDato(valor) + " a un " + tipo, linea, col);
             }
         }
 
-
-         private TipoDato valorToTipoDato(float valor) {
-            if(valor <= 255) {
+        public static TipoDato valorToTipoDato(float valor) {
+            if (!float.IsInteger(valor)) {
+                return TipoDato.Float;
+            } else if(valor <= 255) {
                 return TipoDato.Char;
             } else if(valor <= 65535) {
                 return TipoDato.Int;

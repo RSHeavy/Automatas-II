@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 static void Main(string[] args)
 {
     //char e = 1 / 2;
-    int a = 65536;
-    char b = 256;
-    char c = 10;
+  int a = 2;
+  int b = 1;
+  //char b = 1;
+  char c = (char) (a);
+  Console.WriteLine("resultado = " + c);
     /*
      if(c != 5)
        Console.WriteLine("La suma es distinta de 5");

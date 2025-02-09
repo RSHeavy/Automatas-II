@@ -13,11 +13,11 @@ using System.Threading.Tasks;
         ------------------------------------------------------------------------------
         [ 2) Implementar parámetros por default en el constructor del archivo Léxico ]
         ------------------------------------------------------------------------------
-        [ 3) Implementar línea y columna en los errores Semanticos                    ]
+        [ 3) Implementar línea y columna en los errores Semanticos                   ]
         ------------------------------------------------------------------------------
-         4) Implementar maximoTipo en la asignación (cuando se haga v.setValor(r))  
+        [ 4) Implementar maximoTipo en la asignación (cuando se haga v.setValor(r))  ]
         ------------------------------------------------------------------------------
-         5) Aplicar el casteo en el Stack
+        [ 5) Aplicar el casteo en el Stack                                           ]
         ------------------------------------------------------------------------------
          6) 
         ------------------------------------------------------------------------------
@@ -141,7 +141,11 @@ namespace Semantica {
                     // Como no se ingresó un número desde el Console, entonces viene de una expresión matemática
                     Expresion();
                     float resultado = s.Pop();
-                    l.Last().setValor(resultado, linea, col);
+                    if (maximoTipo > l.Last().getTipoDato()) {
+                        throw new Error("Semantico: no se puede asignar un " + maximoTipo + " a un " + v.getTipoDato());
+                    } else {
+                        l.Last().setValor(resultado, linea, col);   
+                    }
                 }
             }
             if (Contenido == ",") {
@@ -200,9 +204,8 @@ namespace Semantica {
             Variable? v = l.Find(Variable => Variable.getNombre() == Contenido);
 
             if (v == null) {
-                 throw new Error("Sintaxis: La variable " + Contenido + " no esta definida", linea, col);
+                throw new Error("Sintaxis: La variable " + Contenido + " no esta definida", linea, col);
             }
-            //Console.Write(Contenido + " = ");
             
             match(Tipos.Identificador);
 
@@ -253,7 +256,12 @@ namespace Semantica {
                         break;
                 }
             }
-            v.setValor(nuevoValor, linea, col);
+            Console.WriteLine("Maximo tipo: " + maximoTipo);
+            if (maximoTipo > v.getTipoDato()) {
+                throw new Error("Semantico: no se puede asignar un " + maximoTipo + " a un " + v.getTipoDato());
+            } else {
+                v.setValor(nuevoValor, linea, col);
+            }
             //DysplayStack();
         }
 
@@ -380,20 +388,27 @@ namespace Semantica {
                 match(";");
                 Console.WriteLine();
             } else {
-                texto = Contenido.Trim('"');
-
                 if (Clasificacion == Tipos.Cadena) {
+                    texto = Contenido.Trim('"');
                     match(Tipos.Cadena);
                 } else {
-                    match(Tipos.Identificador);
+                    Variable? v = l.Find(Variable => Variable.getNombre() == Contenido);
+                    if (v == null) {
+                        throw new Error("Sintaxis: La variable " + Contenido + " no esta definida", linea, col);
+                    } else {
+                        texto = v.getValor().ToString();
+                        match(Tipos.Identificador);
+                    }
                 }
 
                 if (Contenido == "+") {
+                    //Console.WriteLine("Paso por concatenaciones");
                     Concatenaciones(texto, tipo, ejecuta);
                 } else {
                     match(")");
                     match(";");
                     if (ejecuta) {
+                        
                         if (tipo) {
                             Console.Write(texto);
                         } else {
@@ -481,7 +496,7 @@ namespace Semantica {
             } else if (Clasificacion == Tipos.Identificador) {
                 Variable? v = l.Find(Variable => Variable.getNombre() == Contenido);
                 if (v == null) {
-                    throw new Error("Sintaxis: La variable " + Contenido + " no existe", linea, col);
+                    throw new Error("Sintaxis: La variable " + Contenido + " no esta definida", linea, col);
                 }
                 
                 if (maximoTipo < v.getTipoDato()) {
@@ -510,12 +525,21 @@ namespace Semantica {
                 }
                 Expresion();
                 if (huboCasteo) {
+                    float resultado;
                     maximoTipo = tipoCasteo;
-                    /*
-                        Pop
-                        Residui de la division del tipo
-                        Push
-                    */
+
+                    resultado = s.Pop();
+
+                    switch(tipoCasteo) {
+                        case Variable.TipoDato.Char:
+                            resultado = resultado %  256;
+                        
+                        break;
+                        case Variable.TipoDato.Int: 
+                            resultado = resultado % 65536;
+                        break;
+                    }
+                    s.Push(resultado);
                 }
                 match(")");
             }
@@ -526,12 +550,17 @@ namespace Semantica {
         private void Concatenaciones(String texto, bool tipo, bool ejecuta) {
             match("+");
 
-            texto += Contenido.Trim('"');
-
             if (Clasificacion == Tipos.Cadena) {
+                texto += Contenido.Trim('"');
                 match(Tipos.Cadena);
             } else {
-                match(Tipos.Identificador);
+                Variable? v = l.Find(Variable => Variable.getNombre() == Contenido);
+                    if (v == null) {
+                        throw new Error("Sintaxis: La variable " + Contenido + " no esta definida", linea, col);
+                    } else {
+                        texto += v.getValor().ToString();
+                        match(Tipos.Identificador);
+                    }
             }
             
             if (Contenido == "+") {
@@ -550,3 +579,8 @@ namespace Semantica {
         }
     }
 }
+/*
+    public Lexico (String nombreArchivo = " prueba.cpp", String log = "pueba.log") {
+
+    }
+*/

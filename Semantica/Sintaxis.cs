@@ -22,7 +22,7 @@ namespace Semantica {
             if (clasificacion == Clasificacion) {
                 nexToken();
             } else {
-                throw new Error("Sintaxis: se esperaba " + clasificacion, linea, col);
+                throw new Error("Sintaxis: se esperaba un " + clasificacion, linea, col);
             }
         }
     }

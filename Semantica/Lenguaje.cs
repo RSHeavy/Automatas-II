@@ -125,12 +125,12 @@ namespace Semantica {
                     if (Contenido == "Read") {
                         match("Read");
                         int r = Console.Read();
-                        v.setValor(r, linea, col); // Asignamos el último valor leído a la última variable detectada
+                        v.setValor(r, maximoTipo, linea, col); // Asignamos el último valor leído a la última variable detectada
                     } else {
                         match("ReadLine");
                         string? r = Console.ReadLine();
                         if (float.TryParse(r, out float valor)) {
-                            v.setValor(valor, linea, col);
+                            v.setValor(valor, maximoTipo, linea, col);
                         } else {
                             throw new Error("Sintaxis. No se ingresó un número ", linea, col);
                         }
@@ -141,11 +141,9 @@ namespace Semantica {
                     // Como no se ingresó un número desde el Console, entonces viene de una expresión matemática
                     Expresion();
                     float resultado = s.Pop();
-                    if (maximoTipo > l.Last().getTipoDato()) {
-                        throw new Error("Semantico: no se puede asignar un " + maximoTipo + " a un " + v.getTipoDato());
-                    } else {
-                        l.Last().setValor(resultado, linea, col);   
-                    }
+                    
+                    l.Last().setValor(resultado, maximoTipo, linea, col);   
+                    
                 }
             }
             if (Contenido == ",") {
@@ -214,9 +212,9 @@ namespace Semantica {
                 if (Contenido == "Console") {
                     ListaIdentificadores(v.getTipoDato());
                 } else {
-                    Console.WriteLine("Antes: " + maximoTipo);
+                    //Console.WriteLine("Antes: " + maximoTipo);
                     Expresion();
-                    Console.WriteLine("Despues: " + maximoTipo);
+                    //Console.WriteLine("Despues: " + maximoTipo);
                     nuevoValor = s.Pop();
                 }
             } else {
@@ -256,12 +254,10 @@ namespace Semantica {
                         break;
                 }
             }
-            Console.WriteLine("Maximo tipo: " + maximoTipo);
-            if (maximoTipo > v.getTipoDato()) {
-                throw new Error("Semantico: no se puede asignar un " + maximoTipo + " a un " + v.getTipoDato());
-            } else {
-                v.setValor(nuevoValor, linea, col);
-            }
+            //Console.WriteLine("Maximo tipo: " + maximoTipo);
+    
+            v.setValor(nuevoValor, maximoTipo, linea, col);
+            
             //DysplayStack();
         }
 

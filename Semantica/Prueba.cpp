@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 static void Main(string[] args)
 {
-    //char e = 1 / 2;
-  int a = 2;
-  int b = 1;
+  //char e = 1 / 2;
+  float a = 1.5;
+  float b = 1.5;
   //char b = 1;
-  char c = (char) (a);
+  char c;
+  c = a + b;
   Console.WriteLine("resultado = " + c);
     /*
      if(c != 5)

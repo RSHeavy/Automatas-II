@@ -21,11 +21,18 @@ namespace Semantica {
             this.valor = valor;
         }
 
-        public void setValor(float valor, int linea, int col) {
+        public void setValor(float valor, Variable.TipoDato maximoTipo, int linea, int col) {
+            
             if (valorToTipoDato(valor) <= tipo) {
                 this.valor = valor;
             } else {
                 throw new Error("Semántico: no se puede asignar un " + valorToTipoDato(valor) + " a un " + tipo, linea, col);
+            }
+
+            if (maximoTipo > tipo) {
+                throw new Error("Semantico: no se puede asignar un " + maximoTipo + " a un " + tipo, linea, col);
+            } else {
+                this.valor = valor;
             }
         }
 

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Semantica
-build_property.ProjectDir = C:\Users\hevi-\Desktop\Lenguajes y Automatas II\Automatas-II\Semantica\
+build_property.ProjectDir = C:\Users\hevi-\Desktop\Semestre 5\Lenguajes y Automatas II\Automatas-II\Semantica\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

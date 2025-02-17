@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hevi-\\Desktop\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj": {}
+    "C:\\Users\\hevi-\\Desktop\\Semestre 5\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hevi-\\Desktop\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj": {
+    "C:\\Users\\hevi-\\Desktop\\Semestre 5\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hevi-\\Desktop\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj",
+        "projectUniqueName": "C:\\Users\\hevi-\\Desktop\\Semestre 5\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj",
         "projectName": "Semantica",
-        "projectPath": "C:\\Users\\hevi-\\Desktop\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj",
+        "projectPath": "C:\\Users\\hevi-\\Desktop\\Semestre 5\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\Semantica.csproj",
         "packagesPath": "C:\\Users\\hevi-\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hevi-\\Desktop\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\obj\\",
+        "outputPath": "C:\\Users\\hevi-\\Desktop\\Semestre 5\\Lenguajes y Automatas II\\Automatas-II\\Semantica\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\hevi-\\AppData\\Roaming\\NuGet\\NuGet.Config"

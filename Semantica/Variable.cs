@@ -37,9 +37,11 @@ namespace Semantica {
         }
 
         public static TipoDato valorToTipoDato(float valor) {
+            //Console.WriteLine(valor);
             if (!float.IsInteger(valor)) {
                 return TipoDato.Float;
             } else if(valor <= 255) {
+                //Console.WriteLine(valor);
                 return TipoDato.Char;
             } else if(valor <= 65535) {
                 return TipoDato.Int;

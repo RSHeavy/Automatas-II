@@ -19,8 +19,6 @@ using System.Threading.Tasks;
         ------------------------------------------------------------------------------
         [ 5) Aplicar el casteo en el Stack                                           ]
         ------------------------------------------------------------------------------
-         6) 
-        ------------------------------------------------------------------------------
 */
 
 namespace Semantica {
@@ -139,7 +137,9 @@ namespace Semantica {
                     match(")");
                 } else {
                     // Como no se ingresó un número desde el Console, entonces viene de una expresión matemática
+                    maximoTipo = Variable.TipoDato.Char;
                     Expresion();
+                    //Console.WriteLine(maximoTipo);
                     float resultado = s.Pop();
                     
                     l.Last().setValor(resultado, maximoTipo, linea, col);   
@@ -481,11 +481,11 @@ namespace Semantica {
         //Factor -> numero | identificador | (Expresion)
         private void Factor() {
             if (Clasificacion == Tipos.Numero) {
-
+                //Console.WriteLine("MaximoTipo antes: " + maximoTipo);
                 if (maximoTipo < Variable.valorToTipoDato(float.Parse(Contenido))) {
                     maximoTipo = Variable.valorToTipoDato(float.Parse(Contenido));
                 }
-
+                
                 s.Push(float.Parse(Contenido));
                 //Console.Write(Contenido + " ");
                 match(Tipos.Numero);

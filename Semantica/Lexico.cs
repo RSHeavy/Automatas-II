@@ -78,27 +78,6 @@ namespace Semantica {
             log.WriteLine("Programa: {0}", nombreArchivo);
             fechaHora();
         }
-        /*//Constructor sobrecargado
-        public Lexico(string nombreArchivo) { 
-            log = new StreamWriter(Path.ChangeExtension(nombreArchivo,  ".log"));
-            log.AutoFlush = true;
-
-            if (File.Exists(Path.ChangeExtension(nombreArchivo,  ".cpp"))) {
-                archivo = new StreamReader(nombreArchivo);
-            } else {
-                throw new Error("El archivo " + nombreArchivo + " no existe",  log);
-            }
-
-            if (Path.GetExtension(nombreArchivo) == ".cpp") {
-                asm = new StreamWriter(Path.ChangeExtension(nombreArchivo,  ".asm"));
-                asm.AutoFlush = true;
-            } else {
-                throw new Error("El archivo tiene extension invalida",  log);
-            }
-            log.WriteLine("Programa: {0}", nombreArchivo);
-            fechaHora();
-        }
-        */
         //Destructor de la clase lexico
         public void Dispose() {
             log.WriteLine("Total de lineas {0}",  linea);

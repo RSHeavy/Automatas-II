@@ -7,10 +7,10 @@ namespace Semantica {
     class Program : Token{
         static void Main(string[] args) {
             try {
-                using Lenguaje l = new();
+                using Lenguaje l = new("Main.cpp");
                 l.Programa();
             } catch (Exception e) {
-                Console.WriteLine("Error " + e.Message);
+                Console.WriteLine(e.Message);
             }
         }
     }

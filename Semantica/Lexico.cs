@@ -57,22 +57,19 @@ namespace Semantica {
             { 36, 36, 36, 36, 36, 36, 35, 36, 36, 36, 36, 36, 37, 36, 36, 36, 36, 36, 36, 36, 36, 36,  0, 36, 36, 36  }
         };
         //Constructor de la clase lexico
-        public Lexico(string nombreArchivo = "prueba.cpp", string archivoLog = "prueba.log", string ArchivoASM = "prueba.asm"){
-
-            log = new StreamWriter(archivoLog);
-            log.AutoFlush = true;
-
+        public Lexico(string nombreArchivo = "prueba.cpp") {
             if (File.Exists(nombreArchivo)) {
-                archivo = new StreamReader(nombreArchivo);
+                if (Path.GetExtension(nombreArchivo) == ".cpp") {
+                    log = new StreamWriter(Path.ChangeExtension(nombreArchivo, ".log"));
+                    log.AutoFlush = true;
+                    archivo = new StreamReader(nombreArchivo);
+                    asm = new StreamWriter(Path.ChangeExtension(nombreArchivo, ".asm"));
+                    asm.AutoFlush = true;
+                } else {
+                    throw new Error("Extensión invalida del archivo " + nombreArchivo);
+                }
             } else {
-                throw new Error("El archivo " + nombreArchivo + " no existe", log);
-            }
-
-            if (Path.GetExtension(nombreArchivo) == ".cpp") {
-                asm = new StreamWriter(ArchivoASM);
-                asm.AutoFlush = true;
-            } else {
-                throw new Error("Extensión invalida del archivo " + nombreArchivo, log);
+                throw new Error("El archivo " + nombreArchivo + " no existe");
             }
 
             log.WriteLine("Programa: {0}", nombreArchivo);
